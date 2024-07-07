@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Sheets Dashboard with Input</title>
+</head>
+<body>
+    <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRpj8Kac0IEfKmGGFys3GA1by2NA2wHyhpsrAdJiSbYvXcfzMUCoeZTaP9AF_jutrgfZvjxSuIifBSS/pubhtml?gid=610619584&single=true" width="600" height="400"></iframe>
+
+    <form id="inputForm">
+        <label for="inputField">Input:</label>
+        <input type="text" id="inputField" name="inputField">
+        <button type="submit">Submit</button>
+    </form>
+
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script>
+        document.getElementById('inputForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var inputValue = document.getElementById('inputField').value;
+            updateSheet(inputValue);
+        });
+
+        function updateSheet(value) {
+            gapi.load('client:auth2', function() {
+                gapi.auth2.init({client_id: '458431508181-rh26vmijssnadqgs0c4leiuno3cn6s8l.apps.googleusercontent.com'}).then(function() {
+                    gapi.client.load('sheets', 'v4', function() {
+                        gapi.client.sheets.spreadsheets.values.update({
+                            spreadsheetId: '1552fWkMagEmoPwvLBcS3m6mJjQULfhhLnBvBVdYJUis',
+                            range: 'Sheet2!G2',
+                            valueInputOption: 'RAW',
+                            resource: {
+                                values: [[value]]
+                            }
+                        }).then(function(response) {
+                            console.log('Sheet updated successfully', response);
+                        }, function(error) {
+                            console.error('Error updating sheet', error);
+                        });
+                    });
+                });
+            });
+        }
+    </script>
+</body>
+</html>
